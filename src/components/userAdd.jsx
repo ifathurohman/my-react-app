@@ -13,10 +13,10 @@ const AddUser = () => {
   };
   const [user, setUser] = useState(initialUserState);
   const [submitted, setSubmitted] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
 
   const handleInputChange = event => {
     const {name, value} = event.target;
+    console.log(event.target);
     setUser({...user, [name]: value});
   };
 
@@ -24,7 +24,7 @@ const AddUser = () => {
     const data = {
       CompanyID: user.CompanyID,
       Email: user.Email,
-      Image: user.Image,
+      Image: `http://localhost:3000/public/${user.Image}`,
       Name: user.Name,
       Password: user.Password,
       UserID: user.UserID,
@@ -32,7 +32,7 @@ const AddUser = () => {
     };
     
     UserDataService.create(data)
-      .then(response => {
+    .then(response => {
         setUser({
           CompanyID: response.data.CompanyID,
           Email: response.data.Email,
@@ -42,7 +42,7 @@ const AddUser = () => {
           UserID: response.data.UserID,
           Username: response.data.Username,
         });
-        // setSubmitted(true);
+        setSubmitted(true);
         console.log(response.data);
       })
       .catch(e => {
@@ -96,22 +96,8 @@ const AddUser = () => {
               id="Image"
               name="Image"
               value={user.Image}
-              onChange={event => {
-                console.log(event.target.files[0]);
-                setSelectedImage(event.target.files[0]);
-              }}
+              onChange={handleInputChange}
             />
-            {selectedImage && (
-              <div>
-                <img
-                  alt="not found"
-                  width={'250px'}
-                  src={URL.createObjectURL(selectedImage)}
-                />
-                <br />
-                <button onClick={() => setSelectedImage(null)}>Remove</button>
-              </div>
-            )}
           </div>
           <div className="form-group">
             <label htmlFor="Name">Name</label>

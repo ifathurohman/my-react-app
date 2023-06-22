@@ -153,7 +153,6 @@ const User = props => {
             <Button variant="outline-danger" onClick={deleteUser}>
               Delete
             </Button>
-
           </div>
           <p>{message}</p>
         </div>

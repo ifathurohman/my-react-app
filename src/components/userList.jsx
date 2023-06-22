@@ -7,6 +7,8 @@ const UserList = props => {
   const [searchName, setSearchName] = useState('');
   const userRef = useRef();
 
+  console.log(user);
+
   userRef.current = user;
 
   useEffect(() => {
@@ -47,7 +49,7 @@ const UserList = props => {
   const findByName = () => {
     UserDataService.findByName(searchName)
       .then(response => {
-        console.log(response);
+        console.log(response.data);
         setUser(response.data);
       })
       .catch(e => {
