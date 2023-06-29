@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import UserDataService from '../service/userService';
+import FileBase64 from 'react-file-base64';
 
 const AddUser = () => {
   const initialUserState = {
@@ -13,26 +14,36 @@ const AddUser = () => {
   };
   const [user, setUser] = useState(initialUserState);
   const [submitted, setSubmitted] = useState(false);
+  const [image, setImage] = useState('');
+  const [imagePreview, setImagePreview] = useState(null);
+
+  console.log(image)
+
+  const onImageUpload = (e) => {
+    const file = e.target.files[0]
+    setImage(file);
+    setImagePreview(URL.createObjectURL(file));
+    console.log(file);
+  }
 
   const handleInputChange = event => {
     const {name, value} = event.target;
-    console.log(event.target);
     setUser({...user, [name]: value});
   };
 
   const saveUser = () => {
-    const data = {
-      CompanyID: user.CompanyID,
-      Email: user.Email,
-      Image: `http://localhost:3000/public/${user.Image}`,
-      Name: user.Name,
-      Password: user.Password,
-      UserID: user.UserID,
-      Username: user.Username,
-    };
-    
+
+    const data = new FormData();
+    data.append('CompanyID', user.CompanyID);
+    data.append('Email', user.Email);
+    data.append('Image', image);
+    data.append('Name', user.Name);
+    data.append('Password', user.Password);
+    data.append('UserID', user.UserID);
+    data.append('Username', user.Username);
+
     UserDataService.create(data)
-    .then(response => {
+      .then(response => {
         setUser({
           CompanyID: response.data.CompanyID,
           Email: response.data.Email,
@@ -92,12 +103,12 @@ const AddUser = () => {
             <label htmlFor="Image">Image</label>
             <input
               type="file"
-              className="form-control"
               id="Image"
               name="Image"
-              value={user.Image}
-              onChange={handleInputChange}
+              className="form-control"
+              onChange={e => onImageUpload(e)}
             />
+            <img src={imagePreview} width={300} />
           </div>
           <div className="form-group">
             <label htmlFor="Name">Name</label>

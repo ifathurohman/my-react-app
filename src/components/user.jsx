@@ -14,11 +14,14 @@ const User = props => {
   };
   const [currentUser, setCurrentUser] = useState(initialUserState);
   const [message, setMessage] = useState('');
+  const [image, setImage] = useState('');
+  const [imagePreview, setImagePreview] = useState(null);
 
   const getUser = id => {
     UserDataService.get(id)
       .then(response => {
         setCurrentUser(response.data);
+        setImagePreview(response.data.Image);
         console.log(response.data);
       })
       .catch(e => {
@@ -35,12 +38,27 @@ const User = props => {
     setCurrentUser({...currentUser, [name]: value});
   };
 
+  const onImageUpload = e => {
+    const file = e.target.files[0];
+    setImage(file);
+    setImagePreview(URL.createObjectURL(file));
+    console.log(file);
+  };
+
   const updateUser = () => {
-    UserDataService.update(currentUser._id, currentUser)
+    const data = new FormData();
+    data.append('CompanyID', currentUser.CompanyID);
+    data.append('Email', currentUser.Email);
+    data.append('Image', image);
+    data.append('Name', currentUser.Name);
+    data.append('Password', currentUser.Password);
+    data.append('UserID', currentUser.UserID);
+    data.append('Username', currentUser.Username);
+    UserDataService.update(currentUser._id, data)
       .then(response => {
         props.history.push('/user');
         console.log(response.data);
-        setMessage('The tutorial was updated successfully!');
+        setMessage('The User was updated successfully!');
       })
       .catch(e => {
         console.log(e);
@@ -89,13 +107,13 @@ const User = props => {
             <div className="form-group">
               <label htmlFor="Image">Image</label>
               <input
-                type="text"
-                className="form-control"
+                type="file"
                 id="Image"
                 name="Image"
-                value={currentUser.Image}
-                onChange={handleInputChange}
+                className="form-control"
+                onChange={e => onImageUpload(e)}
               />
+              <img src={imagePreview} width={300} />
             </div>
             <div className="form-group">
               <label htmlFor="Name">Name</label>

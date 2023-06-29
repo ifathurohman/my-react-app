@@ -6,9 +6,7 @@ const UserList = props => {
   const [user, setUser] = useState([]);
   const [searchName, setSearchName] = useState('');
   const userRef = useRef();
-
-  console.log(user);
-
+  
   userRef.current = user;
 
   useEffect(() => {

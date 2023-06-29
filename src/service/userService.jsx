@@ -16,7 +16,8 @@ const get = id => {
   return http.get(`/user/${id}`);
 };
 
-const create = data => {
+const create = (data) => {
+  console.log(data)
   return http.post(`/user`, data);
 };
 
